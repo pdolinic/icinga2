@@ -133,7 +133,7 @@ private:
 	}
 
 	Timer::Ptr m_StatsTimer;
-	WorkQueue m_WorkQueue;
+	WorkQueue m_WorkQueue{0, 1, LogNotice};
 
 	String m_PrefixConfigObject;
 	String m_PrefixConfigCheckSum;

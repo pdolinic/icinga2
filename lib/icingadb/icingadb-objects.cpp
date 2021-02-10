@@ -121,7 +121,7 @@ void IcingaDB::UpdateAllConfigObjects()
 	double startTime = Utility::GetTime();
 
 	// Use a Workqueue to pack objects in parallel
-	WorkQueue upq(25000, Configuration::Concurrency);
+	WorkQueue upq(25000, Configuration::Concurrency, LogNotice);
 	upq.SetName("IcingaDB:ConfigDump");
 
 	typedef std::pair<ConfigType *, String> TypePair;
@@ -163,7 +163,7 @@ void IcingaDB::UpdateAllConfigObjects()
 
 		auto objectChunks (ChunkObjects(type.first->GetObjects(), 500));
 
-		WorkQueue upqObjectType(25000, Configuration::Concurrency);
+		WorkQueue upqObjectType(25000, Configuration::Concurrency, LogNotice);
 		upqObjectType.SetName("IcingaDB:ConfigDump:" + lcType);
 
 		upqObjectType.ParallelFor(objectChunks, [this, &type, &lcType](decltype(objectChunks)::const_reference chunk) {
