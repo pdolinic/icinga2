@@ -127,6 +127,10 @@ void Downtime::Start(bool runtimeCreated)
 			<< " Triggering downtime now.";
 		TriggerDowntime();
 	}
+
+	if (GetFixed() && IsInEffect()) {
+		TriggerDowntime();
+	}
 }
 
 void Downtime::Stop(bool runtimeRemoved)
