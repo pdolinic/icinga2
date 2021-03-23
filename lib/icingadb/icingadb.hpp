@@ -15,6 +15,7 @@
 #include <memory>
 #include <mutex>
 #include <set>
+#include <unordered_map>
 #include <utility>
 
 namespace icinga
@@ -145,6 +146,8 @@ private:
 		return std::move(haystack);
 	}
 
+	static std::set<Type::Ptr> GetTypes();
+
 	Timer::Ptr m_StatsTimer;
 	WorkQueue m_WorkQueue;
 
@@ -156,6 +159,7 @@ private:
 	bool m_ConfigDumpDone;
 
 	RedisConnection::Ptr m_Rcon;
+	std::unordered_map<ConfigType*, RedisConnection::Ptr> m_Rcons;
 
 	struct {
 		DumpedGlobals CustomVar, ActionUrl, NotesUrl, IconImage;
