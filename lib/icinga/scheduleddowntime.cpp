@@ -91,8 +91,10 @@ void ScheduledDowntime::Start(bool runtimeCreated)
 void ScheduledDowntime::TimerProc()
 {
 	for (const ScheduledDowntime::Ptr& sd : ConfigType::GetObjectsByType<ScheduledDowntime>()) {
-		if (sd->IsActive() && !sd->IsPaused())
+		if (sd->IsActive() && !sd->IsPaused()) {
 			sd->CreateNextDowntime();
+			sd->RemoveObsoleteDowntimes();
+		}
 	}
 }
 
@@ -288,6 +290,17 @@ void ScheduledDowntime::CreateNextDowntime()
 			Log(LogNotice, "ScheduledDowntime")
 				<< "Add child downtime '" << childDowntime->GetName() << "'.";
 		}
+	}
+}
+
+void ScheduledDowntime::RemoveObsoleteDowntimes()
+{
+	auto name (GetName());
+	auto downtimeOptionsHash (HashDowntimeOptions());
+
+	for (const Downtime::Ptr& downtime : GetCheckable()->GetDowntimes()) {
+		if (downtime->GetScheduledBy() == name && downtime->GetConfigOwnerHash() != downtimeOptionsHash)
+			Downtime::RemoveDowntime(downtime->GetName(), false, true);
 	}
 }
 
